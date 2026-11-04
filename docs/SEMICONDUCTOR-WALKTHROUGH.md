@@ -8,7 +8,7 @@
 
 ## 1. 준비와 예제 파일
 
-오늘 개인 PC에서는 **키트 루트의 PowerShell**에서 다음을 실행한다.
+시험 전 개인 PC에서는 **키트 루트의 PowerShell**에서 다음을 실행한다.
 
 ```powershell
 python scripts/cofa.py doctor
@@ -40,13 +40,13 @@ python scripts/cofa.py semi --help
 
 ### 2-2. 명령 실행
 
-오늘 키트 루트의 **PowerShell**:
+시험 전 키트 루트의 **PowerShell**:
 
 ```powershell
 python scripts/cofa.py semi yield examples/semiconductor/yield_clean.csv --group-by tool_id --key lot_id,wafer_id
 ```
 
-내일 공개 키트를 `.cofa-kit`으로 받은 **Cofa 과제 루트의 Bash**에서 같은 합성 연습을 실행할 경우:
+시험 중 공개 키트를 `.cofa-kit`으로 받은 **Cofa 과제 루트의 Bash**에서 같은 합성 연습을 실행할 경우:
 
 ```bash
 python3 .cofa-kit/scripts/cofa.py semi yield .cofa-kit/examples/semiconductor/yield_clean.csv --group-by tool_id --key lot_id,wafer_id
@@ -81,7 +81,7 @@ TOOL-A의 행별 통과율 99%와 50%를 단순 평균하면 74.5%가 된다. �
 
 ### 2-4. 중복을 조용히 합산하지 않는지 확인
 
-오늘 PowerShell에서 실행한다.
+시험 전 PowerShell에서 실행한다.
 
 ```powershell
 python scripts/cofa.py semi yield examples/semiconductor/yield_dirty.csv --group-by tool_id --key lot_id,wafer_id
@@ -108,13 +108,13 @@ I 차트의 식은 NIST가 설명하는 개별 측정 관리도 식을 따른다
 
 앞 25개 값은 10, 11이 번갈아 나타나며 마지막 기준값은 10이다. 이후 세 값은 14, 10, 10.5다. 이는 수치를 확인하기 쉬운 합성 입력이며, 25개가 있다는 사실이나 이 교대 패턴이 공정 안정성을 증명하지 않는다.
 
-오늘 키트 루트의 **PowerShell**:
+시험 전 키트 루트의 **PowerShell**:
 
 ```powershell
 python scripts/cofa.py semi spc examples/semiconductor/measurements.csv --value-col value --time-col timestamp --baseline-count 25 --series-cols tool_id,metric,unit
 ```
 
-내일 `.cofa-kit`을 받은 **Cofa 과제 루트의 Bash**:
+시험 중 `.cofa-kit`을 받은 **Cofa 과제 루트의 Bash**:
 
 ```bash
 python3 .cofa-kit/scripts/cofa.py semi spc .cofa-kit/examples/semiconductor/measurements.csv --value-col value --time-col timestamp --baseline-count 25 --series-cols tool_id,metric,unit
@@ -176,7 +176,7 @@ python3 .cofa-kit/scripts/cofa.py semi spc .cofa-kit/examples/semiconductor/meas
 
 ## 5. 결과 저장과 검증 기록 연결
 
-오늘 PowerShell에서 결과를 파일로 보려면 먼저 출력 폴더를 만들고 새 파일명으로 저장한다.
+시험 전 PowerShell에서 결과를 파일로 보려면 먼저 출력 폴더를 만들고 새 파일명으로 저장한다.
 
 ```powershell
 New-Item -ItemType Directory -Force work/semi-practice

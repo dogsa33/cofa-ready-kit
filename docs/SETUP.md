@@ -6,7 +6,7 @@
 
 사전 체험의 **초기 CLI·`mcpServers` 입력칸**, 추가 문서 MCP·플러그인 후보를 따라 확인하려면 [MCP·플러그인 안내](MCP-PLUGINS.md)를 사용한다. 설치와 연결을 자동으로 완료했다는 뜻은 아니다.
 
-## 1. 오늘 개인 PC에서 확인
+## 1. 시험 전 개인 PC에서 확인
 
 저장소 폴더에서 PowerShell로 실행합니다.
 
@@ -16,7 +16,7 @@ python -m unittest discover -s tests -v
 python scripts/cofa.py profile examples/defects.csv
 ```
 
-Python 3.10 이상이 필요합니다. 프로젝트를 열고 `skills/`의 필요한 `SKILL.md`를 읽도록 요청하는 방식은 Python 없이도 가능합니다. 오늘의 로컬 환경 성공이 Cofa 환경의 도구 허용이나 연결 성공을 증명하지는 않습니다.
+Python 3.10 이상이 필요합니다. 프로젝트를 열고 `skills/`의 필요한 `SKILL.md`를 읽도록 요청하는 방식은 Python 없이도 가능합니다. 시험 전 로컬 환경 성공이 Cofa 환경의 도구 허용이나 연결 성공을 증명하지는 않습니다.
 
 ## 2. 시험 당일 Cofa 작업 공간에 가져오기
 

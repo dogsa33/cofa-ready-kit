@@ -12,7 +12,7 @@ GitHub 연결이 완료되면 이 키트의 준비된 소스만 대상으로 `ri
 
 ## 직접 게시하는 경우
 
-1. 오늘 개인 브라우저에서 [GitHub 새 저장소](https://github.com/new)를 엽니다.
+1. 시험 전 개인 브라우저에서 [GitHub 새 저장소](https://github.com/new)를 엽니다.
 2. Owner를 `ripplelover`, 이름을 `cofa-ready-kit`, 공개 범위를 **Public**으로 정합니다.
 3. README·라이선스·gitignore 자동 생성은 선택하지 않고 빈 저장소를 만듭니다. 이 키트에 이미 있습니다.
 4. 로컬 Cofa 폴더의 터미널에서 저장소 경로를 확인합니다.

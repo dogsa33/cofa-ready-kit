@@ -137,6 +137,8 @@ codex mcp add openai_docs --url https://developers.openai.com/mcp
 
 ## 4. Codex CLI 플러그인도 사용할 수 있나
 
+**11월 4일 재응시 안내에는 공개 Plugin 사용이 명시적으로 허용돼 있다.** 과제에 필요한 용도로 Probe 안에서 사용하며 자료 반출·외부 AI·자동 조작 제한은 그대로 적용된다. [공식 안내 요약](RULES.md). 아래 명령 지원 여부는 실제 Cofa CLI에서 확인한다.
+
 **지원하는 Codex CLI에는 플러그인 기능이 있다.** 공식 안내는 Codex 입력칸의 `/plugins`와 일반 터미널의 `codex plugin`을 설명한다. 설치한 지침·도구는 새 세션에서 불러오며 별도 MCP 연결이 필요할 수 있다. [공식 플러그인 안내](https://learn.chatgpt.com/docs/plugins)
 
 이 키트도 이제 설치 가능한 플러그인이다. `python3 .cofa-kit/scripts/cofa.py doctor --check-plugins`로 현재 CLI가 필요한 명령을 지원하는지 확인하고, `supported`면 [키트 설치 명령](EXTENSIONS.md#3-이-키트를-플러그인으로-설치하기)을 실행한다. 설치 목록과 새 대화의 스킬을 확인한다. 일반 터미널에서 목록만 확인할 때는 다음을 쓴다.

@@ -12,6 +12,7 @@ from .semiconductor import column_list, spc_summary, yield_summary
 from .relations import RELATIONSHIPS, join_audit
 from .evidence import check_evidence
 from .diagnostics import diagnose
+from .submission import submission_check
 
 
 def parser() -> argparse.ArgumentParser:
@@ -22,6 +23,12 @@ def parser() -> argparse.ArgumentParser:
     doctor_cmd.add_argument("--workspace", help="Compare installed skills with this kit; do not change files")
     doctor_cmd.add_argument("--check-mcp", action="store_true", help="Run a local synthetic MCP smoke check; requires --workspace")
     doctor_cmd.add_argument("--check-plugins", action="store_true", help="Check Codex plugin command support without installing anything")
+    submission = commands.add_parser("submission-check", help="Read-only disk size and required-file check; not a submission verdict")
+    submission.add_argument("--workspace", required=True)
+    submission.add_argument("--required", action="append", default=[], metavar="REL_PATH", help="Actual required file; repeat as needed (no assumed filenames)")
+    submission.add_argument("--limit-bytes", type=int, default=10_000_000_000)
+    submission.add_argument("--max-entries", type=int, default=100_000)
+    submission.add_argument("--max-seconds", type=float, default=10)
     init = commands.add_parser("init", help="Create requirement and decision files without overwriting")
     init.add_argument("--workspace", required=True)
     profile = commands.add_parser("profile", help="Summarize a bounded sample of CSV/JSON records")
@@ -94,6 +101,10 @@ def main(argv: list[str] | None = None) -> int:
             result = doctor()
             result['kit'] = diagnostics
             exit_code = 0 if result['python_supported'] and diagnostics['ok'] else 1
+        elif args.command == "submission-check":
+            result = submission_check(args.workspace, args.required, limit_bytes=args.limit_bytes,
+                                      max_entries=args.max_entries, max_seconds=args.max_seconds)
+            exit_code = 0 if result['ok'] else 1
         elif args.command == "init":
             result = init_workspace(args.workspace)
         elif args.command == "profile":

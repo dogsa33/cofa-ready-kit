@@ -10,11 +10,11 @@
 
 ## 1. 먼저 읽는 순서와 입력 위치
 
-CLI와 작업 기록 도구를 오늘 직접 연습하려면 이 문서의 1–5장을 사용한다. 반도체 데이터가 실제 과제에 등장하면 [반도체 도구 실습](SEMICONDUCTOR-WALKTHROUGH.md)을 읽는다. 시험 운영은 [규칙 요약](RULES.md)과 [당일 시간표](DAY-PLAN.md), 전체 명령 옵션은 [CLI 설명](TOOLS.md)을 참고한다.
+CLI와 작업 기록 도구를 시험 전 직접 연습하려면 이 문서의 1–5장을 사용한다. 반도체 데이터가 실제 과제에 등장하면 [반도체 도구 실습](SEMICONDUCTOR-WALKTHROUGH.md)을 읽는다. 시험 운영은 [규칙 요약](RULES.md)과 [당일 시간표](DAY-PLAN.md), 전체 명령 옵션은 [CLI 설명](TOOLS.md)을 참고한다.
 
 | 화면 | 입력할 내용 | 예 |
 | --- | --- | --- |
-| 오늘 개인 PC의 PowerShell | Windows에서 실행할 셸 명령 | `python scripts/cofa.py doctor` |
+| 시험 전 개인 PC의 PowerShell | Windows에서 실행할 셸 명령 | `python scripts/cofa.py doctor` |
 | 시험 당일 Cofa 안의 터미널 | 제공 작업 환경의 셸 명령. 아래 실전 예제는 Bash 기준 | `python3 .cofa-kit/scripts/cofa.py doctor` |
 | 터미널에서 연 Codex 입력란 | AI에게 할 자연어 요청, `/status`, `/model`, `$cofa-triage` | “README를 읽고 필수조건을 정리해 줘.” |
 | Cofa 파일 편집기 | Python 코드, JSON, 문서 내용 | `requirements.json` 수정 |
@@ -23,7 +23,7 @@ CLI와 작업 기록 도구를 오늘 직접 연습하려면 이 문서의 1–5
 
 **`$cofa-triage`는 PowerShell 명령이 아니다.** PowerShell에 입력하면 변수로 해석될 수 있다. 먼저 터미널에서 `codex`를 실행한 뒤 Codex 입력란에 적는다. 반대로 `python3 ...`는 일반적으로 터미널 명령이다. Codex에게 그 명령을 실행해 달라고 요청할 수도 있지만, 두 입력란을 혼동하지 않는다.
 
-## 2. 오늘 PC에서 준비물 확인하기
+## 2. 시험 전 PC에서 준비물 확인하기
 
 ### 2-1. 키트 폴더 열기
 
@@ -36,7 +36,7 @@ python --version
 python scripts/cofa.py doctor
 ```
 
-Python 3.10 이상이고 출력의 `python_supported`가 `true`인지 확인한다. `versions`에 없는 실행 프로그램은 `null`로 나올 수 있다. 오늘 PC에 Codex CLI가 없더라도 키트의 데이터 검사와 기록 기능은 연습할 수 있다. `doctor`는 설치된 실행 파일의 버전만 확인한다. Cofa 접속, 도구 허용, 모델 응답, MCP 연결을 검증하는 명령은 아니다.
+Python 3.10 이상이고 출력의 `python_supported`가 `true`인지 확인한다. `versions`에 없는 실행 프로그램은 `null`로 나올 수 있다. 시험 전 PC에 Codex CLI가 없더라도 키트의 데이터 검사와 기록 기능은 연습할 수 있다. `doctor`는 설치된 실행 파일의 버전만 확인한다. Cofa 접속, 도구 허용, 모델 응답, MCP 연결을 검증하는 명령은 아니다.
 
 **2026-10-30 로컬 리허설에서 실제로 발견한 차이:** 이 Windows PC의 Git Bash에서는 `python3 --version`이 실패했고 `python --version`은 3.10.7을 반환했다. `python3.exe`라는 파일이 검색돼도 실행 가능한 Python이라는 뜻은 아니다. 시험 당일 제공 환경에서도 먼저 버전 명령을 실행하고, 성공한 이름을 이후 명령에 일관되게 사용한다. 이 결과는 Cofa의 Python 이름이나 운영체제를 확인한 것이 아니다.
 
@@ -77,7 +77,7 @@ python scripts/cofa.py profile examples/requests.json --format json
 
 ## 3. 15분 정도로 핵심 사용 흐름 익히기
 
-아래는 오늘 개인 PC에서 하는 **합성 연습**이다. 짧은 함수를 만들어 `init → run → 확인 → 상태 수정 → check → report`의 연결을 익힌다. 실제 시험의 요구사항이나 제출 파일명과 무관하다.
+아래는 시험 전 개인 PC에서 하는 **합성 연습**이다. 짧은 함수를 만들어 `init → run → 확인 → 상태 수정 → check → report`의 연결을 익힌다. 실제 시험의 요구사항이나 제출 파일명과 무관하다.
 
 ### 3-1. 별도의 연습 작업 폴더 만들기
 
@@ -210,7 +210,7 @@ python scripts/cofa.py report --workspace work/manual-practice --output work/man
 
 ## 4. 시험 당일 Cofa 작업 공간에 가져오기
 
-이 절의 Bash 명령은 **Cofa가 제공한 터미널**에서 실행한다. 오늘 PC에서 실행해 둔 것과 별개다. 필요한 외부 자료는 제공된 AI를 통해 가져오며, 개인 파일 업로드나 외부 브라우저 직접 접근에 의존하지 않는다. 아래 명령을 제공 Codex에 실행해 달라고 요청해도 된다.
+이 절의 Bash 명령은 **Cofa가 제공한 터미널**에서 실행한다. 시험 전 PC에서 실행해 둔 것과 별개다. 필요한 외부 자료는 제공된 AI를 통해 가져오며, 개인 파일 업로드나 외부 브라우저 직접 접근에 의존하지 않는다. 아래 명령을 제공 Codex에 실행해 달라고 요청해도 된다.
 
 ### 4-1. 현재 과제 루트 확인
 
@@ -415,7 +415,7 @@ python3 .cofa-kit/scripts/install.py --workspace . --mcp-json
 
 ## 10. 사용 준비가 됐는지 직접 확인
 
-- 오늘 합성 연습에서 처음 `check` 실패와 실제 검증 후 통과를 모두 확인했다.
+- 시험 전 합성 연습에서 처음 `check` 실패와 실제 검증 후 통과를 모두 확인했다.
 - 키트 루트와 과제 루트, 터미널과 Codex 입력란을 구분한다.
 - 실제 과제 파일명은 README에서 찾고, 키트의 예시 이름을 강제하지 않는다.
 - Skill 자동 발견이 안 되면 파일 경로로 읽게 할 수 있다.
