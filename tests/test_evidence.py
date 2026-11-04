@@ -215,7 +215,8 @@ class EvidenceTest(unittest.TestCase):
             self.assertEqual(process.returncode, 0, process.stderr)
             return [json.loads(line) for line in process.stdout.splitlines()]
         replies = mcp()
-        self.assertEqual(replies[0]["result"]["serverInfo"]["version"], "1.3.0")
+        from cofa_kit import __version__
+        self.assertEqual(replies[0]["result"]["serverInfo"]["version"], __version__)
         self.assertFalse(replies[1]["result"]["isError"])
         self.assertTrue(json.loads(replies[1]["result"]["content"][0]["text"])["fresh"])
         self.assertTrue(replies[2]["result"]["isError"])

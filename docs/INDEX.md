@@ -59,6 +59,7 @@ README의 기본 진행 중 특정 작업을 따로 요청하고 싶을 때 사�
 
 | 참조 파일 | 필요한 시점 | 확인할 내용 |
 | --- | --- | --- |
+| [스킬·MCP 점검](../skills/cofa-triage/references/tool-check.md) | 스킬 탐색·설치본 차이·MCP 호출 문제 | 필요한 능력 확인, 선택형 로컬 진단, 파일 보존과 CLI 대안 |
 | [기존 프로젝트 수정](../skills/cofa-build/references/existing-project.md) | 기존 API·서비스·스크립트의 오류 수정 | 변경 전 재현, 유지할 계약, 회귀 검사, 최소 변경, 수정 후 재확인 |
 | [검증 기록과 파일 변경](../skills/cofa-verify/references/evidence.md) | 키트 실행기의 선택형 `--watch`를 사용할 때 | 추적한 파일의 변경 여부와 실제 검사 성공의 구분·한계 |
 | [데이터 계약과 수율](../skills/cofa-semiconductor/references/data-contract.md) | 검사 집계·재검사·CSV 결합 | 행과 개체 키, 분자·분모, 재검 선택, 조인 전후 수량 보존 |

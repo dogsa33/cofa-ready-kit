@@ -8,6 +8,9 @@ import sys
 import tempfile
 
 KIT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(KIT))
+from cofa_kit import __version__
+
 VERSIONS = ('2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05')
 MAX_MESSAGE = 64 * 1024
 MAX_OUTPUT = 128 * 1024
@@ -166,7 +169,15 @@ def call_tool(root, name, args):
     if len(data) > MAX_OUTPUT:
         raise ValueError('result exceeds MCP output limit; use the CLI locally')
     text = data.decode('utf-8', errors='replace') or errors.decode('utf-8', errors='replace')
-    return {'content': [{'type': 'text', 'text': text}], 'isError': result.returncode != 0}
+    response = {'content': [{'type': 'text', 'text': text}], 'isError': result.returncode != 0}
+    # Preserve text for older clients; modern clients can consume JSON directly.
+    try:
+        structured = json.loads(text, parse_constant=reject_non_json_number)
+    except (ValueError, RecursionError):
+        structured = None
+    if isinstance(structured, dict):
+        response['structuredContent'] = structured
+    return response
 
 
 class Server:
@@ -174,6 +185,7 @@ class Server:
         self.root = root
         self.initialized = False
         self.ready = False
+        self.protocol_version = None
 
     def handle(self, request):
         if not isinstance(request, dict):
@@ -202,9 +214,10 @@ class Server:
                 return error(-32602, 'initialize requires protocolVersion, capabilities, clientInfo')
             self.initialized = True
             self.ready = False
-            result = {'protocolVersion': version if version in VERSIONS else VERSIONS[0],
+            self.protocol_version = version if version in VERSIONS else VERSIONS[0]
+            result = {'protocolVersion': self.protocol_version,
                       'capabilities': {'tools': {'listChanged': False}},
-                      'serverInfo': {'name': 'cofa-local', 'version': '1.3.0'}}
+                      'serverInfo': {'name': 'cofa-local', 'version': __version__}}
         elif method == 'ping':
             result = {}
         elif not self.ready:
@@ -219,6 +232,8 @@ class Server:
                 result = call_tool(self.root, params['name'], params.get('arguments', {}))
             except (ValueError, OSError, subprocess.TimeoutExpired) as exc:
                 result = {'content': [{'type': 'text', 'text': str(exc)}], 'isError': True}
+            if self.protocol_version in ('2024-11-05', '2025-03-26'):
+                result.pop('structuredContent', None)
         else:
             return error(-32601, 'Method not found')
         return {'jsonrpc': '2.0', 'id': req_id, 'result': result}

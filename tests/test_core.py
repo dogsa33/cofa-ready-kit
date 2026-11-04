@@ -266,7 +266,7 @@ class ToolkitTests(unittest.TestCase):
     def test_real_node_empty_suite_is_not_test_success(self):
         executable = self.node()
         init_workspace(self.root)
-        result = run_check(self.root, "R1", [executable, "--test"], timeout=15)
+        result = run_check(self.root, "R1", [executable, "--test", "--test-reporter=tap"], timeout=15)
         self.assertEqual(result["exit_code"], 0)
         self.assertEqual(result["test_summary"]["recognized"], "node_tap")
         self.assertTrue(result["test_summary"]["no_tests"])
@@ -278,7 +278,7 @@ class ToolkitTests(unittest.TestCase):
         for declaration in ("test.skip('pending', () => {});", "test.todo('pending');"):
             with self.subTest(declaration=declaration):
                 self.write("only.test.cjs", "const test = require('node:test');\n" + declaration)
-                result = run_check(self.root, "R1", [executable, "--test", "only.test.cjs"], timeout=15)
+                result = run_check(self.root, "R1", [executable, "--test", "--test-reporter=tap", "only.test.cjs"], timeout=15)
                 self.assertEqual(result["exit_code"], 0)
                 self.assertEqual(result["test_summary"]["recognized"], "node_tap")
                 self.assertTrue(result["test_summary"]["all_pending"])
@@ -293,7 +293,7 @@ class ToolkitTests(unittest.TestCase):
             with self.subTest(expected=expected):
                 self.write("only.test.cjs", "const test = require('node:test'); const assert = require('node:assert/strict');\n"
                            + "test('arithmetic contract', () => { " + assertion + "; });\n")
-                result = run_check(self.root, "R1", [executable, "--test", "only.test.cjs"], timeout=15)
+                result = run_check(self.root, "R1", [executable, "--test", "--test-reporter=tap", "only.test.cjs"], timeout=15)
                 self.assertEqual(result["test_summary"]["recognized"], "node_tap")
                 self.assertEqual(result["ok"], expected)
                 self.assertEqual(result["test_summary"]["reported_failure"], not expected)

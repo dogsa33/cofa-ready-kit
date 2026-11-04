@@ -6,6 +6,8 @@
 
 ## 요구사항을 먼저 적기
 
+도구 준비 상태를 확인하려면 `python scripts/cofa.py doctor --workspace . --check-mcp`를 선택적으로 실행합니다. 설치 스킬 차이·누락과 합성 자료를 이용한 로컬 MCP 실행만 확인합니다. 실제 연결 상태와는 별개이며 [결과 해석](SETUP.md#스킬mcp-상태-점검)을 참고하세요.
+
 ```bash
 python scripts/cofa.py init --workspace work/practice
 ```
@@ -64,7 +66,9 @@ python scripts/cofa.py run --workspace work/practice --id R1 --timeout 30 -- pyt
 
 v1.2.2는 실제 요약 판정에 사용한 끝부분도 `stdout.tail.txt`, `stderr.tail.txt`에 **각 최대 16,384바이트** 보존합니다. 앞부분 외에 최대 32,768바이트가 추가됩니다. `result.json`의 `tail_capture.streams`에 경로·저장 바이트 수·관측 출력에서의 `[시작, 끝)` 범위를 기록합니다. `tail_capture.complete`는 파이프를 끝까지 관측했는지이며 전체 출력을 저장했다는 뜻은 아닙니다. 잘린 중간 출력은 복원할 수 없고, 끝부분 첫 줄이 중간에서 잘렸을 수 있으면 그 줄은 판정에서 제외합니다.
 
-`run`은 요구사항을 자동으로 `verified`로 바꾸지 않습니다. 일반적인 unittest/pytest 요약과 **Node 기본 TAP 요약**에서 테스트 0개·전부 skip·실패를 발견하면 하위 명령이 0으로 끝나도 성공으로 취급하지 않습니다. Node의 전부 TODO 또는 skip+TODO만 있는 경우도 성공이 아닙니다. Jest·Vitest·사용자 정의 리포터까지 감지한다는 뜻은 아닙니다. 인식되지 않은 출력은 `recognized: null`이므로 실제 테스트 개수·결과를 직접 읽으세요. 여러 실행을 합치거나 출력이 잘린 경우도 직접 검토가 필요합니다. `ok: true`는 실행 관찰상 성공이며 요구사항 충족을 보장하지 않습니다.
+`run`은 요구사항을 자동으로 `verified`로 바꾸지 않습니다. 일반적인 unittest/pytest 요약과 **Node TAP·spec 요약**에서 테스트 0개·전부 skip·실패를 발견하면 하위 명령이 0으로 끝나도 성공으로 취급하지 않습니다. Node의 전부 TODO 또는 skip+TODO만 있는 경우도 성공이 아닙니다. Jest·Vitest·사용자 정의 리포터까지 감지한다는 뜻은 아닙니다. 인식되지 않은 출력은 `recognized: null`이므로 실제 테스트 개수·결과를 직접 읽으세요. 여러 실행을 합치거나 출력이 잘린 경우도 직접 검토가 필요합니다. `ok: true`는 실행 관찰상 성공이며 요구사항 충족을 보장하지 않습니다.
+
+Node 23부터 기본 출력은 spec입니다. v1.4.0은 전체 요약과 색상 코드를 처리하고 `node_tap` / `node_spec`으로 구분합니다. 출력 형식을 고정하려면 `node --test --test-reporter=tap`처럼 명시할 수 있습니다. [Node 공식 리포터 안내](https://nodejs.org/docs/latest-v24.x/api/test.html#test-reporters)
 
 보존한 끝부분에서 완전한 요약이 둘 이상 발견되면 `test_summary.ambiguous: true`, `ok: false`, CLI 종료코드 1로 표시합니다. `summaries`의 각 요약에 스트림과 근거 파일이 연결됩니다. **각 끝부분 16,384바이트 밖의 요약까지 모두 탐지하는 것은 아닙니다.** 여러 검사를 한 명령으로 묶어 마지막 종료코드만 반환하지 말고 검사별로 실행하세요. 출력 안의 고립된 단어나 들여쓴 예시 문구는 테스트 실행 증거로 취급하지 않습니다.
 

@@ -11,13 +11,16 @@ from .core import (KitError, append_log, check_workspace, doctor, init_workspace
 from .semiconductor import column_list, spc_summary, yield_summary
 from .relations import RELATIONSHIPS, join_audit
 from .evidence import check_evidence
+from .diagnostics import diagnose
 
 
 def parser() -> argparse.ArgumentParser:
     cli = argparse.ArgumentParser(description="Local preparation tools; no built-in AI, network, or submission actions. 'run' executes your explicit command.")
     cli.add_argument("--version", action="version", version=__version__)
     commands = cli.add_subparsers(dest="command", required=True)
-    commands.add_parser("doctor", help="Check runtime presence/version without reading credentials")
+    doctor_cmd = commands.add_parser("doctor", help="Check runtimes and optionally local skills/MCP without reading credentials")
+    doctor_cmd.add_argument("--workspace", help="Compare installed skills with this kit; do not change files")
+    doctor_cmd.add_argument("--check-mcp", action="store_true", help="Run a local synthetic MCP smoke check; requires --workspace")
     init = commands.add_parser("init", help="Create requirement and decision files without overwriting")
     init.add_argument("--workspace", required=True)
     profile = commands.add_parser("profile", help="Summarize a bounded sample of CSV/JSON records")
@@ -86,7 +89,10 @@ def main(argv: list[str] | None = None) -> int:
     try:
         exit_code = 0
         if args.command == "doctor":
+            diagnostics = diagnose(args.workspace, args.check_mcp)
             result = doctor()
+            result['kit'] = diagnostics
+            exit_code = 0 if result['python_supported'] and diagnostics['ok'] else 1
         elif args.command == "init":
             result = init_workspace(args.workspace)
         elif args.command == "profile":

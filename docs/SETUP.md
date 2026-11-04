@@ -55,7 +55,7 @@ Codex CLI에서는 `$cofa-triage`처럼 명시적으로 호출할 수 있습니�
 
 ## 4. 선택형 로컬 MCP
 
-Skill은 작업 지침이고, MCP는 AI가 호출할 수 있는 도구 연결입니다. 이 키트의 `cofa_local`은 같은 작업 환경에서 Python 프로세스로 실행됩니다. 이 로컬 서버에는 HTTP 서버, 포트 공개, 외부 계정, API 키가 없습니다. 별도로 선택하는 `openai_docs`는 원격 서버입니다. 버전 1.3.0의 로컬 제공 도구는 여섯 가지입니다.
+Skill은 작업 지침이고, MCP는 AI가 호출할 수 있는 도구 연결입니다. 이 키트의 `cofa_local`은 같은 작업 환경에서 Python 프로세스로 실행됩니다. 이 로컬 서버에는 HTTP 서버, 포트 공개, 외부 계정, API 키가 없습니다. 별도로 선택하는 `openai_docs`는 원격 서버입니다. 버전 1.4.0의 로컬 제공 도구는 여섯 가지입니다.
 
 **도구를 매번 직접 고를 필요는 없습니다.** MCP가 연결돼 현재 도구 목록에 나타나면 Codex가 설명과 입력 조건을 보고 필요한 도구를 선택하도록 요청할 수 있습니다. README의 시작 요청에 이 지시를 포함했습니다. 키트를 `git clone`하는 것과 MCP 연결은 별개이며, 미연결이면 CLI·기존 도구로 진행합니다. 일반적인 스킬 선택과 MCP 도구 선택 방식은 OpenAI의 [스킬 활성화](https://developers.openai.com/plugins/concepts/skills)와 [도구 호출](https://developers.openai.com/plugins/concepts/mcp-server) 문서를 확인했습니다. 실제 Cofa에서의 탐색·연결·선택 성공을 실측했다는 뜻은 아닙니다.
 
@@ -74,7 +74,32 @@ Skill은 작업 지침이고, MCP는 AI가 호출할 수 있는 도구 연결입
 
 여러 CSV를 결합할 때는 [조인 검사 실습](DATA-JOIN.md)을 참고하세요. 새 기능도 같은 `cofa_local` 서버에 있으므로 별도 MCP 서버를 추가하지 않습니다. 현재 세션의 도구 목록 갱신은 제공 환경 안내를 따르고, 새 도구가 보이지 않으면 같은 검사의 CLI를 사용합니다. 업데이트된 반도체 스킬과 기존 설치본이 달라 설치가 멈추면 기존 파일을 보존하고 최신 `.cofa-kit/skills/cofa-semiconductor/SKILL.md`를 직접 읽게 하세요.
 
-v1.3.0으로 갱신할 때도 같은 원칙입니다. 모델 평가 스킬은 현재 키트의 `skills/cofa-model-eval/SKILL.md`를 직접 읽을 수 있습니다. 검증 스킬 등 기존 설치본이 다르면 설치기는 충돌을 알리고 보존하므로 강제로 덮어쓰지 않습니다. 새로운 MCP 도구를 쓰려면 받은 서버 코드가 v1.3.0인지와 실제 도구 목록을 확인하고, 목록 갱신은 제공 환경의 안내를 따릅니다.
+v1.4.0으로 갱신할 때도 같은 원칙입니다. 현재 키트의 `skills/스킬이름/SKILL.md`를 직접 읽을 수 있습니다. 기존 설치본이 다르면 설치기는 충돌을 알리고 보존하므로 강제로 덮어쓰지 않습니다. 최신 완료 요약 지침도 현재 파일을 직접 읽으면 적용할 수 있습니다. MCP 서버 버전은 초기화 응답의 `serverInfo.version`으로 확인하며 현재 값은 `1.4.0`입니다. 실행 중인 서버의 재연결은 제공 환경의 안내를 따릅니다.
+
+### 스킬·MCP 상태 점검
+
+기존 `doctor`는 런타임 확인용으로 그대로 사용할 수 있습니다. 아래는 스킬·MCP 문제를 조사할 때만 쓰는 추가 옵션입니다.
+
+```bash
+python3 .cofa-kit/scripts/cofa.py doctor --workspace . --check-mcp
+```
+
+`--workspace .`만 주면 스킬을 비교하고, `--check-mcp`를 함께 주면 로컬 MCP도 점검합니다. 현재 작업 폴더를 지정하세요. Windows에서 `python`이 스토어 안내만 열면 설치된 Python 3.10+의 실제 경로나 `py -3.11`처럼 확인된 런처를 사용합니다.
+
+| 출력 | 의미와 다음 행동 |
+| --- | --- |
+| `kit.skills[].status: current` | 배포 파일과 설치본 내용이 같음. 실제 Codex의 탐색 여부는 별도 확인 |
+| `not_installed` | 선택형 설치가 없음. 키트의 SKILL.md를 직접 읽으면 됨 |
+| `different` / `incomplete` | 내용 차이 / 파일 누락. 사용자 수정일 수 있으므로 보존하고 `source` 경로를 직접 읽기 |
+| `error` | 경로·접근 오류. 연결된 경로는 읽지 않음. 오류 확인 후 기존 도구로 진행 |
+| `kit.local_mcp.status: passed` | 임시 합성 CSV로 초기화·도구 6개 목록·실제 분석과 구조화 결과 확인 |
+| `failed` / `not_checked` | 로컬 검사 실패 / 검사하지 않음. 실제 Cofa 연결 실패와 구분 |
+
+종료코드 `0`은 요청한 로컬 점검에 문제가 없음, `1`은 차이·누락·검사 실패, `2`는 인수나 작업 경로 오류입니다. 차이·누락이 있어도 직접 파일 읽기로 진행할 수 있습니다. `--check-mcp`만 단독 사용하면 `--workspace` 누락 오류를 냅니다.
+
+기존 스킬·설정·과제 데이터를 수정하지 않고 임시 자료만 생성·정리합니다. 비밀키나 원격 서버 설정을 읽지 않으며 네트워크 연결도 하지 않습니다. **실제 Cofa 클라이언트 연결·원격 Docs 연결·스킬 선택·과제 기능 성공은 별도 확인**입니다.
+
+MCP의 JSON 결과는 `structuredContent`에도 담아 다시 문자열을 해석할 필요를 줄였습니다. 기존 텍스트 결과와 오류 상태는 유지하며 2025-03-26·2024-11-05 규격에서는 텍스트만 보냅니다. 기준: [MCP 구조화 결과](https://modelcontextprotocol.io/specification/2025-11-25/server/tools#structured-content), [버전 협상](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle#version-negotiation).
 
 실행 명령이나 임의 코드, 파일 쓰기, 원격 요청 도구를 MCP로 노출하지 않습니다. 결과는 연결된 제공 Codex로 돌아갑니다. 제출 확정 후에는 사용하지 않습니다. 이 서버는 Cofa의 제출 상태를 조회하지 않으며 사용 중단을 자동 강제하는 장치가 아닙니다.
 

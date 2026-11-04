@@ -347,6 +347,7 @@ def _cell(value: Any) -> str:
 
 def _test_summaries(text: str) -> list[dict[str, Any]]:
     """Find complete supported footers, without combining unrelated runs."""
+    text = re.sub(r"\x1b\[[0-9;]*m", "", text)
     summaries = []
     unittest_footer = (
         r"^Ran (?P<count>\d+) tests? in \d+(?:\.\d+)?s\r?\n(?:[ \t]*\r?\n)*"
@@ -371,17 +372,17 @@ def _test_summaries(text: str) -> list[dict[str, Any]]:
                           "reported_failure": any(counts.get(key, 0) > 0 for key in ("failed", "error", "errors"))})
     for _ in re.finditer(r"^(?:=+[ \t]*)?no tests ran in \d+(?:\.\d+)?s[ \t]*(?:=+)?$", text, re.MULTILINE):
         summaries.append({"recognized": "pytest", "no_tests": True, "all_skipped": False})
-    # Match the complete default Node test-runner footer, not isolated '# tests'
-    # text in arbitrary logs. Jest, Vitest and custom reporters are not inferred.
+    # Match complete TAP and spec footers (Node 23+ defaults to spec).
+    # A backreference rejects mixed markers and unrelated partial log lines.
     tap_footer = (
-        r"^# tests (?P<tests>\d+)\r?\n(?:# suites \d+\r?\n)?"
-        r"# pass (?P<passed>\d+)\r?\n# fail (?P<failed>\d+)\r?\n"
-        r"# cancelled (?P<cancelled>\d+)\r?\n# skipped (?P<skipped>\d+)\r?\n"
-        r"# todo (?P<todo>\d+)\r?\n# duration_ms \d+(?:\.\d+)?[ \t]*$")
+        r"^(?P<marker>#|ℹ) tests (?P<tests>\d+)\r?\n(?:(?P=marker) suites \d+\r?\n)?"
+        r"(?P=marker) pass (?P<passed>\d+)\r?\n(?P=marker) fail (?P<failed>\d+)\r?\n"
+        r"(?P=marker) cancelled (?P<cancelled>\d+)\r?\n(?P=marker) skipped (?P<skipped>\d+)\r?\n"
+        r"(?P=marker) todo (?P<todo>\d+)\r?\n(?P=marker) duration_ms \d+(?:\.\d+)?[ \t]*$")
     for tap in re.finditer(tap_footer, text, re.MULTILINE):
-        counts = {key: int(value) for key, value in tap.groupdict().items()}
+        counts = {key: int(value) for key, value in tap.groupdict().items() if key != 'marker'}
         executed = counts["passed"] + counts["failed"] + counts["cancelled"]
-        summaries.append({"recognized": "node_tap", "counts": counts,
+        summaries.append({"recognized": "node_tap" if tap.group('marker') == '#' else "node_spec", "counts": counts,
                           "no_tests": counts["tests"] == 0,
                           "all_skipped": counts["tests"] > 0 and counts["skipped"] == counts["tests"],
                           "all_pending": counts["tests"] > 0 and executed == 0 and counts["skipped"] + counts["todo"] == counts["tests"],
