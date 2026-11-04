@@ -36,6 +36,7 @@ README의 기본 진행 중 특정 작업을 따로 요청하고 싶을 때 사�
 | [SCENARIO.md](../prompts/SCENARIO.md) | README의 시작 요청을 받은 Codex가 진행할 때 | 실제 과제부터 읽고 스킬·연결된 MCP 도구를 선택; 현재 증거를 기준으로 재개 |
 | [START.md](../prompts/START.md) | 요구사항 파악만 따로 요청할 때 | 실제 과제의 필수조건·제출물·확인 질문 정리 |
 | [BUILD.md](../prompts/BUILD.md) | 확정된 필수조건을 구현하거나 기존 결함을 고칠 때 | 기존 스택·계약을 유지한 작은 구현과 관련 검증 |
+| [IMPROVE.md](../prompts/IMPROVE.md) | 더 높은 완성도·반복 검증 또는 결과 수정을 원할 때 | 원하는 품질·중단 시각·보존 범위, 수정 후 검증 반복, `/goal` 확인과 일반 요청 대안 |
 | [RESCUE.md](../prompts/RESCUE.md) | 오류가 발생하거나 같은 수정이 반복될 때 | 작은 재현 입력·기대값·실제값으로 원인을 좁혀 최소 수정 |
 | [RESUME.md](../prompts/RESUME.md) | 대화가 길어지거나 제출 확정 전에 다시 시작할 때 | 실제 파일·결정·검증 기록에서 이어갈 작업 확인 |
 | [VERIFY.md](../prompts/VERIFY.md) | 제출 확정 전 마지막 점검을 맡길 때 | 필수 파일·기능·독립 기대값·문서 일치와 실패·미검증 확인 |
