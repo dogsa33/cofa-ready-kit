@@ -4,7 +4,7 @@
 
 **기본은 README의 시작 요청이다. 이 문서는 MCP 연결이나 플러그인 확인이 필요할 때만 읽는다.** 공개 도구 사용은 가능하지만 제공 Codex·허용 모델, 자료 반출 금지, Computer Use 금지, 후속 서술형 AI 금지 조건은 그대로 적용된다. [참가자 PDF 규칙](RULES.md)
 
-사전 체험에서 사용자가 확인한 것은 **Codex CLI 형태와 MCP 설정의 `mcpServers` 최상위 이름**이다. 실제 버전·플러그인 지원·로컬 서버의 `command`/`args` 필드·원격 HTTP 서버 필드·본 과제에 설정이 유지되는지는 아직 확인하지 못했다. 일반 Codex 지원과 Cofa 지원을 구분한다.
+**v1.5.0의 바로 쓸 명령은 [외부 MCP·플러그인 사용법](EXTENSIONS.md)에 있다.** 사용자는 Cofa에서 외부 MCP 추가가 가능함을 확인했다. 이에 맞춰 네 외부 문서 서버 프리셋·직접 주소·기존 설정 합치기와 키트 플러그인 패키지를 제공한다. 개별 서버의 인증·실제 Cofa 플러그인 지원·설정 유지 여부는 해당 환경에서 구분해 확인한다.
 
 ## 1. 처음 보이는 CLI에서 시작하기
 
@@ -77,7 +77,7 @@ Python 3.10+가 필요하다. 제공 환경에서 `python`만 있다면 그 명�
 
 ## 3. 여러 서버를 준비하고 필요한 도구만 선택하기
 
-현재 준비 구성은 **`cofa_local` + 선택형 `openai_docs`**다. `cofa_local` 하나에 로컬 도구 6개가 있고, `openai_docs`는 공개 OpenAI 문서를 찾는 별도 원격 서버다. 아래 명령은 두 서버의 설정 후보를 한 번에 출력한다.
+기본 예제는 **`cofa_local` + 선택형 `openai_docs`**다. 더 필요한 서버는 `--mcp-preset context7`, `--mcp-preset deepwiki`, `--mcp-preset microsoft-learn`으로 고르거나 `--remote-mcp 이름=HTTPS주소`로 추가한다. 아래 기존 두 서버 명령도 그대로 사용할 수 있다.
 
 ```bash
 python3 .cofa-kit/scripts/install.py --workspace . --mcp-json --with-openai-docs
@@ -93,13 +93,15 @@ python3 .cofa-kit/scripts/install.py --workspace . --mcp-json --with-openai-docs
 | --- | --- | --- |
 | **cofa_local** | 기본 선택형 MCP | 로컬 CSV·반도체·키 관계·기록 파일 검사. 같은 기능을 CLI로도 사용 |
 | **OpenAI Docs MCP** | 선택형 두 서버 구성에 포함 | 연결·허용 범위를 확인한 뒤 공개 OpenAI/Codex 문서가 필요할 때 자동 선택. 일반 기술 질의만 전송 |
-| Context7 | 시험 기본 구성에서 제외 | 현재 인증 안내와 외부 질의 처리 범위를 함께 고려. 아래 공식 근거 참고 |
+| Context7 | 선택형 프리셋 제공 | 라이브러리·버전별 문서 조회. 현재 인증·사용량 조건에 맞춰 사용 |
+| Microsoft Learn | 선택형 프리셋 제공 | Microsoft 공개 문서·코드 예제 검색과 읽기 |
+| DeepWiki | 선택형 프리셋 제공 | 공개 GitHub 프로젝트의 문서·구조 읽기. 외부 AI 질의 기능과 구분 |
 | filesystem·Git·추가 shell MCP | 기본 추가하지 않음 | 제공 Codex의 파일·터미널 기능과 중복. 공개 저장소 받기에 GitHub 계정 연결은 불필요 |
 | SQLite·Excel 관련 MCP | 실제 SQL/XLSX 과제가 나오면 필요성 판단 | 먼저 제공된 로컬 라이브러리·CLI 사용. 원격 DB·스프레드시트로 시험 자료를 전송하지 않음 |
 | GitHub·Drive·배포 서비스 연결 | 시험 작업에 기본 추가하지 않음 | 외부 계정·게시·파일 전송 기능이 이번 기본 흐름에 필요하지 않음 |
 | 브라우저 자동화·별도 AI 모델 MCP | 이 키트에서는 사용하지 않음 | UI는 본인이 확인하고 AI는 제공 Codex·허용 모델만 사용 |
 
-Context7 공식 문서는 Codex 연결에 OAuth·API 키 흐름을 안내하며, 개인정보 문서는 질의의 원격 처리와 문서 정렬용 LLM 전달을 설명한다. 이 내부 처리를 주최 측이 어떻게 분류하는지는 확인하지 못했으므로 위반이라고 단정하지 않는다. **기본 추가 대상으로 권하지 않는다는 키트의 판단**이다. 로컬 stdio 실행이나 읽기 전용 표시만으로 외부 전송이 없다고 판단하지 않는다. [Codex 연결 안내](https://context7.com/docs/clients/codex), [데이터 처리](https://context7.com/docs/security/data-privacy)
+Context7는 기존 보수적 제외 판단을 바꿔 선택형 프리셋에 포함했다. 2026-11-04 개발 PC에서는 키 없이 공개 라이브러리 조회가 성공했지만, 공식 설치 문서는 OAuth·API 키도 안내하므로 인증·사용량 조건은 현재 연결에서 확인한다. 질의는 원격에서 처리된다. [Codex 연결 안내](https://context7.com/docs/clients/codex), [데이터 처리](https://context7.com/docs/security/data-privacy)
 
 ### OpenAI Docs MCP를 선택했다면
 
@@ -137,7 +139,7 @@ codex mcp add openai_docs --url https://developers.openai.com/mcp
 
 **지원하는 Codex CLI에는 플러그인 기능이 있다.** 공식 안내는 Codex 입력칸의 `/plugins`와 일반 터미널의 `codex plugin`을 설명한다. 설치한 지침·도구는 새 세션에서 불러오며 별도 MCP 연결이 필요할 수 있다. [공식 플러그인 안내](https://learn.chatgpt.com/docs/plugins)
 
-하지만 CLI 화면의 외형만으로 Cofa 버전·기능·설치 허용까지 확정할 수는 없다. 먼저 1번의 도움말에서 `plugin` 지원을 확인한다. 지원하고 제공 환경이 안내하는 경우에만 Codex 입력칸에서 `/plugins`를 열거나, 일반 터미널에서 다음을 확인한다.
+이 키트도 이제 설치 가능한 플러그인이다. `python3 .cofa-kit/scripts/cofa.py doctor --check-plugins`로 현재 CLI가 필요한 명령을 지원하는지 확인하고, `supported`면 [키트 설치 명령](EXTENSIONS.md#3-이-키트를-플러그인으로-설치하기)을 실행한다. 설치 목록과 새 대화의 스킬을 확인한다. 일반 터미널에서 목록만 확인할 때는 다음을 쓴다.
 
 ```bash
 codex plugin list --help
@@ -165,8 +167,8 @@ OpenAI Developers 전체 플러그인은 문서 조회 외에 Platform 연결·�
 지원되지 않거나 확인이 안 되면 현재 스킬과 로컬 도구로 계속 진행해 줘.
 ```
 
-이 지시는 설치를 무조건 시작하라는 뜻이 아니다. 현재 구성은 **제공 Codex + 필요한 스킬 직접 읽기 + 선택형 cofa_local**로 진행할 수 있고, 공개 OpenAI 문서용 `openai_docs`는 위 조건에 맞춰 추가한다. 기존 플러그인의 확인된 지침·도구도 같은 선택 기준을 따른다. 제출 확정 후에는 스킬·MCP·플러그인 사용을 중단하고 후속 서술형은 본인이 답한다.
+위는 후보 검토 요청의 예다. 사용자가 설치까지 요청했다면 지원되는 명령으로 해당 설치를 진행하고 결과를 확인한다. 외부 MCP와 플러그인의 실제 지침·도구를 같은 선택 기준으로 활용한다. 제출 확정 후에는 스킬·MCP·플러그인 사용을 중단하고 후속 서술형은 본인이 답한다.
 
 ## 확인 범위
 
-2026-10-31 공식 본문과 개발 PC의 `codex-cli 0.164.0-alpha.11.1` 도움말을 대조했다. 이 PC에서 plugin/mcp 명령은 확인했지만 **Cofa의 실제 버전·추가 서버·플러그인 설치 및 연결은 검증하지 않았다.** 이 문서를 만들면서 새 서버·플러그인 설치나 개인 인증·전역 설정 변경은 하지 않았다. 허용 범위의 근거는 참가자 브리프 p.1·상세 가이드 pp.2–5이며 실제 과제 안내·운영 공지를 우선한다.
+2026-11-04 개발 PC의 `codex-cli 0.164.0-alpha.11.1`에서 별도 임시 설정 경로로 키트 marketplace 등록·플러그인 설치·여섯 스킬 포함을 확인했다. 네 외부 MCP에도 공개 질의를 실제 호출했다. 기존 사용자 설정은 바꾸지 않았다. **개발 PC 검증과 실제 Cofa 설치는 별개**이며 상세 범위는 [검증 기록](VALIDATION.md)에 남겼다.

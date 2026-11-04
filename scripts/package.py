@@ -6,7 +6,8 @@ from pathlib import Path
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-FILES = {'.gitignore', 'AGENTS.md', 'LICENSE', 'README.md'}
+FILES = {'.gitignore', 'AGENTS.md', 'LICENSE', 'README.md', 'plugin.json',
+         '.codex-plugin/plugin.json', '.agents/plugins/marketplace.json'}
 DIRECTORIES = {'cofa_kit', 'docs', 'examples', 'prompts', 'scripts', 'skills', 'tests'}
 EXTENSIONS = {'.py', '.md', '.json', '.jsonl', '.csv', '.yaml', '.yml', '.toml', '.ps1', '.sh'}
 

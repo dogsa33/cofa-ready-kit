@@ -2,7 +2,30 @@
 
 [시험 첫 화면](../README.md) · [전체 문서 지도](INDEX.md)
 
-최근 검증일: **2026-11-04 KST**, 키트 버전 **1.4.0**. Windows, Python 3.11.1, Node 24.12.0에서 확인했다. 이 기록은 준비 키트의 확인 결과이며 대회 과제의 검증 결과가 아니다.
+최근 검증일: **2026-11-04 KST**, 키트 버전 **1.5.0**. Windows, Python 3.11.1, Node 24.12.0, Codex CLI 0.164.0-alpha.11.1에서 확인했다. 이 기록은 준비 키트의 확인 결과이며 대회 과제의 검증 결과가 아니다.
+
+## v1.5.0 외부 MCP·플러그인
+
+```text
+py -3.11 -X utf8 -m unittest discover -s tests -v
+107 tests: 105 passed, 2 skipped
+```
+
+새 검사 8개는 서버 프리셋·직접 URL·기존 JSON 보존 병합·충돌 거부·잘못된 URL/JSON·인수 오류 때 설치 방지·플러그인 manifest/배포 경로·CLI 도움말 지원과 실패 판정을 다룬다. 기존 Windows 심볼릭 링크 권한 검사 두 개는 건너뛰었다. 자동 회귀 검사는 원격 서버에 접속하거나 플러그인을 설치하지 않는다.
+
+별도 실측:
+
+| 개발 PC에서 실행한 대상 | 확인 결과 | 확인하지 않은 범위 |
+| --- | --- | --- |
+| `openai_docs` | HTTP 초기화·목록, `search_openai_docs`의 공개 `Codex MCP` 질의 성공 | Cofa에서의 연결 |
+| `microsoft_learn` | HTTP 초기화·목록, `microsoft_docs_search`의 Python 가상환경 질의 성공 | Cofa에서의 연결 |
+| `deepwiki` | HTTP 초기화·목록, `read_wiki_structure`의 공개 `python/cpython` 조회 성공 | AI 질문 도구·비공개 저장소 |
+| `context7` | HTTP 초기화·목록, `resolve-library-id`의 공개 React 라이브러리 조회 성공 | 모든 문서 도구·인증·사용량 한도 |
+| 키트 플러그인 | 공개 배포 파일만 임시 경로에 복사, 별도 Codex 설정 경로로 marketplace 등록·`cofa-ready-kit@cofa-ready` 설치, 버전 1.5.0·여섯 스킬·참조 파일 확인 | 실제 Cofa 설치·모델의 자동 선택·타사 플러그인 인증 |
+
+위 원격 검사는 인증 정보·실제 과제 자료를 사용하지 않았다. 일반 공개 질의의 응답을 확인한 시점의 결과이며 앞으로의 가용성이나 Cofa 호환성을 보장하지 않는다. 플러그인 검사는 개인 Codex 설정을 바꾸지 않는 임시 환경에서 실행했다. 지원 상태만 확인하는 `doctor --check-plugins`와 실제 설치 검증은 별도다.
+
+공식 출처와 검토한 공개 후기·준비 저장소는 [외부 MCP·플러그인 안내](EXTENSIONS.md)에 연결했다. 이전 v1.4.0 및 그 이전 기록은 아래에 보존한다.
 
 ## v1.4.0 개선과 확인
 

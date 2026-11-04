@@ -45,7 +45,8 @@ git clone --depth 1 https://github.com/ripplelover/cofa-ready-kit.git .cofa-kit
 키트의 README와 examples는 실제 시험 문제가 아니야.
 각 단계에 맞는 스킬을 네가 골라 필요한 SKILL.md만 직접 읽고 적용해 줘.
 SCENARIO의 선택 기준으로 연결된 허용 MCP 도구 중 필요한 것만 골라 써 줘.
-cofa_local은 로컬 자료 검사에, 내가 연결한 공식 openai_docs는 시험 내용 없는 공개 기술 질의에만 써 줘.
+cofa_local은 로컬 자료 검사에, 연결한 외부 문서 MCP는 시험 내용 없는 공개 기술 질의에 써 줘.
+Context7·Microsoft Learn·DeepWiki·OpenAI Docs와 설치한 플러그인 중 필요한 기능을 골라 줘.
 필요 없는 도구는 호출하지 말고, 미연결·실패 시 CLI나 기존 도구로 진행해 줘.
 기존 파일·작업 기록을 보존해 줘.
 기능 작업이 끝날 때 실제 한 일과 근거를 기록하고, 제출 준비 때 작업 내역을 정리해 줘.
@@ -171,7 +172,27 @@ python3 .cofa-kit/scripts/install.py --workspace . --mcp-json --with-openai-docs
 | **OpenAI Docs MCP** | 선택해 연결한 경우 공개 OpenAI/Codex 문서가 필요할 때 사용. 시험 자료 없이 일반 기술 질의만 전송 |
 | **CLI 플러그인** | `codex plugin --help`로 실제 지원을 확인한 뒤 필요한 공개 지침·도구만 검토 |
 
-서버별 JSON 예제, 플러그인 확인 순서, Context7 등 기본 구성에서 제외한 후보의 이유는 **[MCP·플러그인 상세 안내](docs/MCP-PLUGINS.md)**에 모았습니다. 자동 선택은 Codex가 이 지침을 적용하는 흐름이며 별도 실행 서비스나 규칙 차단 장치가 아닙니다. 원격 서버 자동 연결이나 새 플러그인 자동 설치는 하지 않으며 실제 Cofa의 HTTP 지원을 확인해야 합니다. CLI 교체나 개인 인증·권한 변경도 필요하지 않습니다.
+### 외부 MCP를 더 추가하려면
+
+외부 MCP 추가가 가능하다는 사용자 확인을 반영했습니다. 예를 들어 **라이브러리 문서용 Context7 + 공개 GitHub 문서용 DeepWiki**를 고르려면 다음을 실행하고 출력된 항목을 MCP 탭에 추가합니다.
+
+```bash
+python3 .cofa-kit/scripts/install.py --workspace . --mcp-json --mcp-preset context7 --mcp-preset deepwiki
+```
+
+`--mcp-preset microsoft-learn` 또는 `--mcp-preset openai-docs`도 사용할 수 있습니다. 원하는 서버 주소는 `--remote-mcp 이름=https://서버주소/mcp`, 기존 설정과 합치기는 `--merge-mcp 기존설정.json`으로 지원합니다. **[외부 MCP·플러그인 바로 사용하기](docs/EXTENSIONS.md)**에 후보별 용도·인증 조건·복사할 명령을 모았습니다. 기존 기본 두 서버 예제도 그대로 동작합니다.
+
+### 플러그인으로 설치하려면
+
+이제 키트 자체도 여섯 스킬을 묶은 플러그인입니다. `doctor --check-plugins`가 `supported`라면 다음을 실행합니다.
+
+```bash
+codex plugin marketplace add ./.cofa-kit
+codex plugin add cofa-ready-kit@cofa-ready
+codex plugin list --json
+```
+
+설치 목록과 새 대화의 스킬을 확인합니다. 스킬 복사 설치와 플러그인 설치 중 한 방식을 선택하세요. 개발 PC의 별도 임시 환경에서는 실제 설치를 확인했고, Cofa의 CLI가 이 명령을 지원하는지는 현재 환경에서 확인합니다. 미지원이면 스킬 직접 읽기·MCP 방식으로 사용할 수 있습니다. [다른 플러그인과 상세 절차](docs/EXTENSIONS.md#4-다른-플러그인도-설치하고-싶다면)
 
 ### 스킬·MCP가 준비됐는지 확인하기
 
@@ -183,7 +204,7 @@ python3 .cofa-kit/scripts/cofa.py doctor --workspace . --check-mcp
 
 스킬 파일 비교와 임시 예제 CSV를 이용한 로컬 MCP 실행을 점검합니다. 기존 파일·설정을 바꾸거나 원격 서버에 접속하지 않습니다. 스킬이 `different`이면 사용자 수정일 수 있으므로 보존하고 최신 키트의 SKILL.md를 직접 읽게 하세요. `not_installed`는 선택형 설치를 하지 않았다는 뜻이며 오류가 아닙니다. 로컬 검사 통과와 **실제 Cofa 연결 성공은 별개**입니다. [결과 해석](docs/SETUP.md#스킬mcp-상태-점검)
 
-v1.4.0: **스킬 6개·로컬 MCP 도구 6개**. 쉬운 완료 요약, 선택형 스킬·MCP 진단, MCP 구조화 결과, Node TAP·spec 검사 결과 인식을 보강했습니다. MCP 없이도 스킬을 읽고 CLI를 사용할 수 있습니다. [모델 평가 스킬 사용 예](prompts/MODEL-EVAL.md)
+v1.5.0: **스킬 6개·로컬 MCP 도구 6개 + 외부 MCP 프리셋 4개·직접 주소·설정 합치기·키트 플러그인**. 쉬운 완료 요약과 기존 CLI도 그대로 제공합니다. [모델 평가 스킬 사용 예](prompts/MODEL-EVAL.md)
 
 SK하이닉스 AI 해커톤 2026 2차 예선용 비공식 준비 도구입니다. 개인 안내 기준 **10월 31일 10:00–14:00, 09:40까지 준비**, 과제 최대 180분·후속 서술형 6문항×5분이며 실제 공지·화면·과제 지시가 우선합니다. Proctor·신분 확인은 가이드와 화면 순서에 따릅니다. 실제 문제·정답·채점표는 포함하지 않습니다.
 

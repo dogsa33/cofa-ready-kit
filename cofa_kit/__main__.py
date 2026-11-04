@@ -21,6 +21,7 @@ def parser() -> argparse.ArgumentParser:
     doctor_cmd = commands.add_parser("doctor", help="Check runtimes and optionally local skills/MCP without reading credentials")
     doctor_cmd.add_argument("--workspace", help="Compare installed skills with this kit; do not change files")
     doctor_cmd.add_argument("--check-mcp", action="store_true", help="Run a local synthetic MCP smoke check; requires --workspace")
+    doctor_cmd.add_argument("--check-plugins", action="store_true", help="Check Codex plugin command support without installing anything")
     init = commands.add_parser("init", help="Create requirement and decision files without overwriting")
     init.add_argument("--workspace", required=True)
     profile = commands.add_parser("profile", help="Summarize a bounded sample of CSV/JSON records")
@@ -89,7 +90,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         exit_code = 0
         if args.command == "doctor":
-            diagnostics = diagnose(args.workspace, args.check_mcp)
+            diagnostics = diagnose(args.workspace, args.check_mcp, args.check_plugins)
             result = doctor()
             result['kit'] = diagnostics
             exit_code = 0 if result['python_supported'] and diagnostics['ok'] else 1

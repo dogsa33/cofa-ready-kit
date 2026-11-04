@@ -1,7 +1,8 @@
 # Cofa Ready Kit maintenance
 
 This repository contains generic preparation tools, not an exam answer or official Cofa software.
-Use Python 3.10+ standard library for the core. Keep all runtime data local.
+Use Python 3.10+ standard library for the core. Keep task data local; selected
+remote documentation tools may receive general public technical queries.
 Never equate kit tests or artifact existence with successful exam functionality.
 Preserve task-specific required filenames, existing code, and user changes.
 Run `python -m unittest discover -s tests -v` for code changes.

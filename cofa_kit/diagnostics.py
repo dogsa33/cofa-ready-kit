@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 import stat
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -115,14 +116,36 @@ def mcp_smoke():
                 'next': 'Use the existing CLI or tools; check the kit path and Python runtime.'}
 
 
-def diagnose(workspace=None, check_mcp=False):
+def plugin_support():
+    """Inspect local CLI help only; never install or change configuration."""
+    executable = shutil.which('codex')
+    if not executable:
+        return {'status': 'unavailable', 'reason': 'Codex CLI was not found', 'installation_checked': False}
+    commands = [('plugin', '--help'), ('plugin', 'add', '--help'),
+                ('plugin', 'marketplace', 'add', '--help')]
+    try:
+        for arguments in commands:
+            result = subprocess.run([executable, *arguments], capture_output=True,
+                                    text=True, encoding='utf-8', errors='replace', timeout=8)
+            if result.returncode != 0 or 'codex plugin' not in result.stdout.lower():
+                return {'status': 'unavailable', 'reason': 'This CLI does not expose the required plugin commands',
+                        'installation_checked': False}
+        return {'status': 'supported', 'executable': executable, 'installation_checked': False,
+                'next': 'The CLI exposes plugin install commands. Add the kit marketplace and install cofa-ready-kit@cofa-ready, then verify the installed skills.'}
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return {'status': 'failed', 'reason': type(exc).__name__, 'installation_checked': False}
+
+
+def diagnose(workspace=None, check_mcp=False, check_plugins=False):
     if check_mcp and workspace is None:
         raise KitError('--check-mcp requires --workspace')
     skills = skill_status(workspace) if workspace is not None else []
     mcp = mcp_smoke() if check_mcp else {'status': 'not_checked'}
+    plugins = plugin_support() if check_plugins else {'status': 'not_checked'}
     needs_attention = any(s['status'] in ('different', 'incomplete', 'error') for s in skills)
-    return {'kit_version': __version__, 'skills': skills, 'local_mcp': mcp,
-            'ok': not needs_attention and mcp['status'] != 'failed',
+    return {'kit_version': __version__, 'skills': skills, 'local_mcp': mcp, 'plugins': plugins,
+            'ok': not needs_attention and mcp['status'] != 'failed'
+                  and plugins['status'] in ('supported', 'not_checked'),
             'client_connection_checked': False, 'remote_mcp_checked': False,
             'next': 'Different does not mean outdated: it may be customized. Preserve installed files and read the source SKILL.md directly. Uninstalled skills are optional.',
             'scope': 'Compares packaged skill files only. MCP check uses a temporary synthetic workspace, not task data or the active Cofa connection. No settings are changed.'}
