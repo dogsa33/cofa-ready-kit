@@ -1,6 +1,6 @@
 # 필요한 문서를 바로 찾는 전체 지도
 
-**시험 당일 첫 화면은 [루트 README](../README.md)다.** Cofa 일반 터미널에서 키트를 받은 뒤 `.cofa-kit/README.md`를 연다. README 순서대로 제공 Codex에 시작 요청 → SCENARIO 직접 읽기 → 구현·검증·제출 준비를 진행한다. 스킬 설치와 MCP 연결은 필요한 경우에 선택한다.
+**시험 당일 첫 화면은 [루트 README](../README.md)다.** Cofa 일반 터미널에서 키트를 받은 뒤 `.cofa-kit/README.md`를 연다. README의 통합 요청 → BOOTSTRAP의 지원 확인·도구 준비 → SCENARIO·IMPROVE의 구현·검증·제출 준비로 이어진다. MCP 화면 저장은 참가자가 하고, 설치·연결이 막혀도 스킬 직접 읽기와 기존 도구로 진행한다.
 
 이 페이지에서는 현재 상황에 맞는 한 행을 골라 연다. EXAM-PLAYBOOK은 화면과 진행의 추가 설명, MANUAL은 명령과 도구의 추가 상세다. 요청문과 스킬은 **제출 확정 전**에 사용하며, 확정 후 대기·후속 서술형은 AI 없이 직접 진행한다.
 
@@ -32,6 +32,7 @@ README의 기본 진행 중 특정 작업을 따로 요청하고 싶을 때 사�
 
 | 요청문 | 필요한 시점 | 맡길 작업 |
 | --- | --- | --- |
+| [BOOTSTRAP.md](../prompts/BOOTSTRAP.md) | README 통합 요청으로 시작할 때 | 목표·스킬·MCP·키트 플러그인 준비, 실제 확인 상태와 필요한 화면 저장 구분 |
 | [prompts/README.md](../prompts/README.md) | 요청문을 고르거나 직접 작성할 때 | 상황별 요청 선택과 목표·자료·제약·완료 기준·진행 범위 정리 |
 | [SCENARIO.md](../prompts/SCENARIO.md) | README의 시작 요청을 받은 Codex가 진행할 때 | 실제 과제부터 읽고 스킬·연결된 MCP 도구를 선택; 현재 증거를 기준으로 재개 |
 | [START.md](../prompts/START.md) | 요구사항 파악만 따로 요청할 때 | 실제 과제의 필수조건·제출물·확인 질문 정리 |

@@ -2,7 +2,31 @@
 
 [시험 첫 화면](../README.md) · [전체 문서 지도](INDEX.md)
 
-최근 검증일: **2026-11-04 KST**, 키트 버전 **1.6.1**. Windows, Python 3.11.1, Node 24.12.0, Codex CLI 0.164.0-alpha.11.1에서 확인했다. 이 기록은 준비 키트의 확인 결과이며 대회 과제의 검증 결과가 아니다.
+최근 검증일: **2026-11-04 KST**, 키트 버전 **1.6.2**. Windows, Python 3.11.1, Node 24.12.0, Codex CLI 0.164.0-alpha.11.1에서 확인했다. 이 기록은 준비 키트의 확인 결과이며 대회 과제의 검증 결과가 아니다.
+
+## v1.6.2 한 번 복사하는 통합 시작
+
+README의 시작 블록을 `/goal` 목표 하나로 통합하고 [BOOTSTRAP.md](../prompts/BOOTSTRAP.md)에 스킬·MCP 설정 준비·키트 플러그인 설치·실제 연결 확인·반복 개선으로 이어지는 순서를 정리했다. `/goal` 미지원 시 같은 블록의 접두어만 제거해 일반 요청으로 쓰며, 기존 목표가 있으면 중복 생성하지 않는다. MCP 화면 저장은 참가자가 수행한다.
+
+```text
+py -3.11 -X utf8 -m unittest discover -s tests -v
+118 tests: 115 passed, 3 skipped
+```
+
+Windows 심볼릭 링크 생성 권한이 필요한 세 검사는 건너뛰었다. 실행 로직 변경 없이 버전·문서·프롬프트를 갱신했으며, 통합 준비 명령과 기존 동작의 회귀를 확인하기 위해 전체 검사를 다시 실행했다.
+
+별도 임시 과제 폴더에 공개 배포 파일만 `.cofa-kit`으로 복사해 다음을 실측했다.
+
+| 검사 | 확인 결과 |
+| --- | --- |
+| README 통합 블록 | `/goal` 블록 1개, 목표 본문 1,110자. 공식 4,000자 제한 이내이며 BOOTSTRAP·SCENARIO·IMPROVE 파일이 존재 |
+| 통합 doctor 명령 | 미설치 스킬은 직접 읽기 가능 상태, 합성 MCP 검사 통과, 현재 개발 PC의 플러그인 명령 지원 확인 |
+| MCP 생성·병합 | 로컬 1개+외부 4개 JSON 생성, 임시 과제의 실제 실행 파일·경로 반영, 기존 서버·상위 설정·원본 파일·과제 AGENTS 보존 |
+| 생성된 로컬 MCP 설정 실행 | JSON의 command·args 그대로 기동, 도구 6개 확인, `.cofa-kit/examples/defects.csv`의 합성 5행 실제 호출 성공 |
+| 외부 MCP 4개 | 각각 초기화·목록·공개 질의 성공. OpenAI Docs 검색, Microsoft Learn 검색, DeepWiki 공개 저장소 구조, Context7 공개 라이브러리 식별 |
+| 키트 플러그인 v1.6.2 | 개인 설정과 분리한 임시 Codex 환경에서 marketplace 등록·설치, 버전·여섯 스킬·참조 파일 확인 |
+
+이 검사는 **개발 PC의 실제 명령·MCP 호출·설치 검증**이다. Cofa 화면에 JSON을 저장하거나 그 환경의 `/goal`을 실행한 것은 아니다. 모델이 이 지침을 모든 상황에서 따르는지, 실제 시험 타이머에 맞춰 자동 중단하는지는 검증하지 않았으며 그런 기능을 구현했다고 주장하지 않는다. Goal 명령과 길이 제한은 [공식 CLI 문서](https://learn.chatgpt.com/docs/developer-commands#set-or-view-a-task-goal-with-goal)의 본문으로 확인했다.
 
 ## v1.6.1 반복 개선·피드백 지침
 
